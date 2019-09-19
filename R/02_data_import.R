@@ -36,7 +36,8 @@ nyc_city <- suppressWarnings(
 
 ### 2015 ACS
 
-CTs_2015 <- get_acs(
+CTs_2015 <- 
+  get_acs(
   geography = "tract", 
   variables = c(med_income = "B19013_001",
                 pop_white = "B03002_003",
@@ -56,13 +57,13 @@ CTs_2015 <- get_acs(
   as_tibble() %>%
   st_as_sf() %>% 
   st_transform(26918) %>% 
-  set_names(c("GEOID", "NAME", "Variable", "Estimate", "MOE", "pop_total",
-            "pop_total_MOE", "geometry")) %>% 
-  select(-MOE, -pop_total_MOE) %>% 
-  spread(key = Variable, value = Estimate) %>% 
+  rename(pop_total = summary_est) %>% 
+  select(-moe, -summary_moe) %>% 
+  spread(key = variable, value = estimate) %>% 
   mutate(pop_density = pop_total/st_area(geometry)) %>% 
   filter(pop_total > 100) %>%
-  na.omit()
+  na.omit() %>% 
+  select(-geometry, everything(), geometry)
 
 ### 2000 decennial
 
@@ -82,14 +83,13 @@ CTs_2000 <- get_decennial(
              "Richmond County"),
   summary_var = "P001001",
   geometry = TRUE) %>% 
-  as_tibble() %>% 
-  st_as_sf() %>% 
   st_transform(26918) %>% 
-  set_names(c("GEOID", "NAME", "Variable", "Estimate", "pop_total", "geometry")) %>% 
-  spread(key = Variable, value = Estimate) %>% 
+  rename(estimate = value, pop_total = summary_value) %>% 
+  spread(key = variable, value = estimate) %>% 
   mutate(pop_density = pop_total/st_area(geometry)) %>% 
   filter(pop_total > 100) %>%
-  na.omit()
+  na.omit() %>% 
+  select(-geometry, everything(), geometry)
 
 # Add percentage variables
 
@@ -112,7 +112,8 @@ CTs_2015 <- st_erase(CTs_2015, nyc_water)
 
 # Get East Harlem bounding box
 
-nyc_pumas <- pumas(36, class = "sf") %>% 
+nyc_pumas <- 
+  pumas(36, class = "sf") %>% 
   st_transform(26918) %>%
   as_tibble() %>% 
   st_as_sf() %>%
@@ -128,6 +129,8 @@ harlem <- nyc_pumas %>%
   st_cast("POLYGON") 
  
 harlem <- harlem[1,]
+
+plot(harlem)
 
 
 
