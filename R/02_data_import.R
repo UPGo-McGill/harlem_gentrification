@@ -61,7 +61,7 @@ CTs_2015 <-
   select(-moe, -summary_moe) %>% 
   spread(key = variable, value = estimate) %>% 
   mutate(pop_density = pop_total/st_area(geometry)) %>% 
-  filter(pop_total > 100) %>%
+  # filter(pop_total > 100) %>%
   na.omit() %>% 
   select(-geometry, everything(), geometry)
 
@@ -87,7 +87,7 @@ CTs_2000 <- get_decennial(
   rename(estimate = value, pop_total = summary_value) %>% 
   spread(key = variable, value = estimate) %>% 
   mutate(pop_density = pop_total/st_area(geometry)) %>% 
-  filter(pop_total > 100) %>%
+  # filter(pop_total > 100) %>%
   na.omit() %>% 
   select(-geometry, everything(), geometry)
 
@@ -131,10 +131,3 @@ harlem <- nyc_pumas %>%
 harlem <- harlem[1,]
 
 plot(harlem)
-
-
-
-
-
-
-
