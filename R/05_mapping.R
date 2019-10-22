@@ -23,7 +23,7 @@ CTs_2000_2015 <-
                values_to = "count") %>% 
   ggplot() +
   geom_sf(aes(fill = count)) +
-  facet_grid(vars(year, variable))
+  facet_grid(~year, variable)
               
                
 
