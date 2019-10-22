@@ -1,13 +1,32 @@
 ### MAP MAKING #################################################################
 
-## Create percent_change variables
+# Add year to data, then combine 2000 and 2015
 
-CTs_comparison <- CTs_comparison %>% 
-  mutate("density_change" = ((CTs_2015$pop_density - CTs_comparison$pop_density) / CTs_comparison$pop_density),
-         "income_change" = ((CTs_2015$med_income - CTs_comparison$med_income) / CTs_comparison$med_income),
-         "black_change" = ((CTs_2015$pop_black - CTs_comparison$pop_black) / CTs_comparison$pop_black),
-         "hisp_change" = ((CTs_2015$pop_hisp - CTs_comparison$pop_hisp) / CTs_comparison$pop_hisp),
-         "white_change" = ((CTs_2015$pop_white - CTs_comparison$pop_white) / CTs_comparison$pop_white))
+CTs_2015 <- 
+  CTs_2015 %>% 
+  mutate("Year" = 2015)
+
+CTs_fixed_2000 <- 
+  CTs_fixed_2000 %>% 
+  mutate("Year" = 2000)
+
+CTs_2000_2015 <- 
+  rbind(CTs_fixed_2000, CTs_2015)
+
+# Tidy data for ggplot mapping
+
+
+# testCTs <- 
+  CTs_2000_2015 %>% 
+  pivot_longer(cols = immigrant:med_income:pop_black:pop_hisp:pop_white,
+               names_to = "variable",
+               values_to = "count") %>% 
+  ggplot() +
+  geom_sf(aes(fill = count)) +
+  facet_grid(vars(year, variable))
+              
+               
+
 
 ## Initialize map list and base map  
 ### need separate for 2000 and 2015?
@@ -15,7 +34,7 @@ CTs_comparison <- CTs_comparison %>%
 figure <- list()
 base_map <- tm_shape(nyc_city, bbox = bb(st_bbox(harlem$geometry), xlim=c(-0.02, 1.2),
                                         ylim=c(0.01, 0.8), relative = TRUE),
-                     unit = "mi") +
+                       unit = "mi") +
   tm_fill(col = "#f0f0f0") +
   tm_shape(nyc_city) +
   tm_fill(col = "grey80", title = "Base Map") +
