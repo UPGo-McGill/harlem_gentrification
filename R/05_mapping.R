@@ -37,6 +37,21 @@ gg_bbox <- function(geom, x1 = 0, x2 = 1, y1 = 0, y2 = 1) {
   coord_sf(xlim = as.vector(matrix_x), ylim = as.vector(matrix_y))
 }
 
+
+## Test for NAs 
+
+a <- CTs_2000_2015 %>% 
+  pivot_longer(cols = immigrant:med_income:pop_black:pop_hisp:pop_white,
+               names_to = "variable",
+               values_to = "count") 
+
+which(is.na(a$variable))
+plot(is.na(a$variable))
+plot(a$variable)
+hist(a$variable)
+hist(as.numeric(a$variable))
+hist(as.factor(a$variable))
+
 # testCTs <- 
   CTs_2000_2015 %>% 
   pivot_longer(cols = immigrant:med_income:pop_black:pop_hisp:pop_white,
