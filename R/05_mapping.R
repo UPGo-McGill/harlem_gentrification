@@ -15,18 +15,39 @@ CTs_2000_2015 <-
 
 # Tidy data for ggplot mapping
 
+plot(CTs_2015["geometry"])
+
+GEOID_geometry <- 
+  CTs_2000_2015 %>% 
+  select(GEOID, geometry)
+
+
+# bounding box function 
+
+gg_bbox <- function(geom, x1 = 0, x2 = 1, y1 = 0, y2 = 1) {
+  
+  bbox <- st_bbox(geom)
+  
+  matrix_x <- matrix(bbox[c(1,3)], nrow = 1) %*% matrix(
+    c(1 - x1, x1, 1 - x2, x2), nrow = 2)
+  
+  matrix_y <- matrix(bbox[c(2,4)], nrow = 1) %*% matrix(
+    c(1 - y1, y1, 1- y2, y2), nrow = 2)
+  
+  coord_sf(xlim = as.vector(matrix_x), ylim = as.vector(matrix_y))
+}
 
 # testCTs <- 
   CTs_2000_2015 %>% 
   pivot_longer(cols = immigrant:med_income:pop_black:pop_hisp:pop_white,
                names_to = "variable",
                values_to = "count") %>% 
+  st_as_sf() %>% 
   ggplot() +
   geom_sf(aes(fill = count)) +
-  facet_grid(~year, variable)
+  facet_grid(rows = vars(variable),cols = vars(Year)) +
+    gg_bbox(harlem)
               
-               
-
 
 ## Initialize map list and base map  
 ### need separate for 2000 and 2015?
