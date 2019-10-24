@@ -18,6 +18,7 @@ library(ggpubr)
 library(tidyverse)
 library(sf)
 library(extrafont)
+library(standardize)
 
 options(tigris_use_cache = TRUE)
 suppressWarnings(font_import(paths = "data/fonts", prompt = FALSE))
