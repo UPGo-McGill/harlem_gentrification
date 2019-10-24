@@ -13,13 +13,43 @@ CTs_fixed_2000 <-
 CTs_2000_2015 <- 
   rbind(CTs_fixed_2000, CTs_2015)
 
+# Standardize data
+
+
+CTs_standard <- 
+  CTs_2000_2015 %>%
+  mutate(
+    std_immigrant = scale(1 - (immigrant/pop_total)),
+    std_white = scale(pop_white/pop_total),
+    std_black = scale(pop_black/pop_total),
+    std_hisp = scale(pop_hisp/pop_total),
+    std_inc = scale(med_income)) %>% 
+  pivot_longer(cols = std_immigrant:std_white:std_black:std_hisp:std_inc,
+               names_to = "std_variable",
+               values_to = "value") %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(aes(fill = value)) +
+  facet_grid(rows = vars(std_variable),cols = vars(Year)) +
+  theme(
+    panel.background = element_rect(fill = "gray"),
+      panel.grid.major = element_line(colour = "gray")) +
+  gg_bbox(harlem)
+
 # Tidy data for ggplot mapping
 
-plot(CTs_2015["geometry"])
-
-GEOID_geometry <- 
-  CTs_2000_2015 %>% 
-  select(GEOID, geometry)
+#CTs_mapping <- 
+CTs_2000_2015 %>% 
+  pivot_longer(cols = immigrant:med_income:pop_black:pop_hisp:pop_white,
+               names_to = "variable",
+               values_to = "count") %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(aes(fill = std_count)) +
+  facet_grid(rows = vars(variable),cols = vars(Year),
+             scales = "free") +
+  scale_x_continuous(breaks = seq(0, 100, 10)) + theme_classic()
+gg_bbox(harlem)
 
 
 # bounding box function 
@@ -52,16 +82,11 @@ hist(a$variable)
 hist(as.numeric(a$variable))
 hist(as.factor(a$variable))
 
-# testCTs <- 
+plot(CTs_2015["geometry"])
+
+GEOID_geometry <- 
   CTs_2000_2015 %>% 
-  pivot_longer(cols = immigrant:med_income:pop_black:pop_hisp:pop_white,
-               names_to = "variable",
-               values_to = "count") %>% 
-  st_as_sf() %>% 
-  ggplot() +
-  geom_sf(aes(fill = count)) +
-  facet_grid(rows = vars(variable),cols = vars(Year)) +
-    gg_bbox(harlem)
+  select(GEOID, geometry)
               
 
 ## Initialize map list and base map  
