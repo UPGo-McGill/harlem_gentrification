@@ -121,7 +121,7 @@ plot(harlem)
 CTs_2000_joined %>% 
   
   ggplot() +
-  geom_sf(aes(fill=MHI) +
+  geom_sf(aes(fill=MHI)) +
   # scale_fill_gradientn(colors = c("#9DBF9E", "#FCB97D", "#A84268"),
   #                      na.value = "grey80") +
   theme_void() +

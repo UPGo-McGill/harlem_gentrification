@@ -1,0 +1,22 @@
+DP3
+Profile of Selected Economic Characteristics: 2000
+<p>Detailed Occupation Code List (PDF 42KB)</p>
+
+<p>(X) Not applicable.
+<br /></p>
+
+<p> User note on employment status data</p>
+
+<p>NOTE: Data based on a sample except in P3, P4, H3, and H4. For
+information on confidentiality protection, sampling error,
+nonsampling error, definitions, and count corrections see
+<a href="http://www.census.gov/prod/cen2000/doc/sf3.pdf">http://www.census.gov/prod/cen2000/doc/sf3.pdf</a></p>
+
+<p>Source: U.S. Census Bureau, Census 2000 Summary File 3, Matrices
+P30, P32, P33, P43, P46, P49, P50, P51, P52, P53, P58, P62, P63,
+P64, P65, P67, P71, P72, P73, P74, P76, P77, P82, P87, P90, PCT47,
+PCT52, and PCT53
+<br /></p>
+
+<p>Detailed Industry Code List (PDF 46KB)</p>
+
