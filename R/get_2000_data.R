@@ -1,40 +1,33 @@
-med_hh_inc <- read.csv("~/Downloads/2000 Census Data/med_hh_inc_2000.csv", header=FALSE) 
-
-v17 <- load_variables(2000, "sf1", cache = TRUE)
-
-Sys.setenv(CENSUS_KEY = "f10d995b6180d782ebbd4f685c2191f815b9b1f1")
-Sys.getenv()
-
-census_api_key("f10d995b6180d782ebbd4f685c2191f815b9b1f1")
 
 ## 1. Get 2000 census data
 
-CTs_2000 <- st_read("data/DECENNIALDPSF32000.DP3_2020-11-26T101806/DECENNIALDPSF32000.DP3_data_with_overlays_2020-11-26T101603.csv") 
+CTs_2000 <-
+  read_csv("data/DECENNIALDPSF32000.DP3_2020-11-26T101806/DECENNIALDPSF32000.DP3_data_with_overlays_2020-11-26T101603.csv",
+           skip = 1) %>% 
+  select(1, 19) %>% 
+  set_names(c("GEOID", "MHI"))
 
 ## Make GEOIDs match tidycensus data
 
-CTs_GEOID <- str_remove_all(CTs_2000$GEO_ID, "1400000US")
-
 CTs_2000 <- 
   CTs_2000 %>% 
-  mutate(GEO_ID = CTs_GEOID)  
-  #rename(GEOID = GEO_ID)
+  mutate(GEOID = str_remove_all(GEOID, "1400000US"))  
+
 
 ## Get 2000 CT geometries
 
-CTs_shp_2000 <- tracts(
-  state = "36",
-  county = c("New York County",
-             "Kings County",
-             "Queens County",
-             "Bronx County",
-             "Richmond County"),
-  year = 2000
-  ) %>% 
-  st_transform(26918) %>% 
+CTs_shp_2000 <- 
+  tracts(state = "36",
+         county = c("New York County",
+                    "Kings County",
+                    "Queens County",
+                    "Bronx County",
+                    "Richmond County"),
+         year = 2000) %>% 
+  as_tibble() %>% 
+  st_as_sf() %>% 
+  st_transform(32618) %>% 
   rename(GEOID = CTIDFP00)
-
-
 
 white_2000 <- get_decennial(
   geography = "tract", 
@@ -53,7 +46,9 @@ white_2000 <- get_decennial(
              "Richmond County"),
    summary_var = "P001001",
   geometry = TRUE) %>% 
-  st_transform(26918) %>% 
+  as_tibble() %>% 
+  st_as_sf() %>% 
+  st_transform(32618) %>% 
   rename(estimate = value, pop_total = summary_value) %>%
   spread(key = variable, value = estimate) %>%
   mutate(pop_density = pop_total/st_area(geometry)) %>%

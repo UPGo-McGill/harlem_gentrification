@@ -1,14 +1,13 @@
 ### DATA IMPORT ################################################################
 
-## Load libraries and helper functions
+# Load libraries and helper functions -------------------------------------
 
 source("R/01_helper_functions.R")
 
 
-### Import census geographies ####
+# Import census geographies -----------------------------------------------
 
-## Import water
-
+# Import water
 nyc_water <- rbind(
   area_water("NY", "New York", class = "sf"),
   area_water("NY", "Queens", class = "sf"),
@@ -16,9 +15,7 @@ nyc_water <- rbind(
   st_transform(26918) %>% 
   st_union()
 
-
-## Import nyc_city and county boundaries
-
+# Import nyc_city and county boundaries
 nyc_city <- suppressWarnings(
   counties(state = "New York", class = "sf") %>% 
   as_tibble() %>% 
@@ -27,25 +24,22 @@ nyc_city <- suppressWarnings(
   filter(NAME %in% c("New York", "Queens", "Bronx")) %>% 
   st_erase(nyc_water) %>%
       st_transform(26918) %>% 
-      st_union()
-  )
+      st_union())
 
-### Import census data ####
 
-## Import, clean up and spread census data
+# Import census data ------------------------------------------------------
 
-### 2015 ACS
+### 2018 ACS
 
-CTs_2015 <- 
+CTs_2018 <- 
   get_acs(
   geography = "tract", 
   variables = c(med_income = "B19013_001",
                 pop_white = "B03002_003",
                 pop_hisp = "B03002_012",
                 pop_black = "B03002_004",
-                immigrant = "B05001_006"
-                ),
-  year = 2015, 
+                immigrant = "B05001_006"),
+  year = 2018, 
   state = "36",
   county = c("New York County",
              "Kings County",
@@ -69,7 +63,7 @@ CTs_2015 <-
 
 CTs_2000 <- get_decennial(
   geography = "tract", 
-  variables = c(med_income = "P053001",
+  variables = c(#med_income = "P053001",
                 pop_white = "P007003",
                 pop_hisp = "P007010",
                 pop_black = "P007004",
